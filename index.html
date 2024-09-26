@@ -1,0 +1,89 @@
+<html>
+  <head>
+    <title>IMA HTML5 Simple Demo</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script async src="//securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+    <script async src="./prebid.js"></script>
+    <script>
+
+        var pbjs = pbjs || {};
+        pbjs.que = pbjs.que || [];
+  
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+  
+        var PREBID_TIMEOUT = 500;
+  
+        var adUnits = [{
+            code: 'video',
+            mediaTypes: {
+                video: {
+                    context: 'outstream',
+                    playerSize: [640, 480],
+                    mimes: ['video/x-ms-wmv','video/mp4'],
+                    protocols: [1, 2, 3, 4, 5, 6, 7, 8],
+                    playbackmethod: [6],
+                    skip: 1
+                }
+            },
+            bids: [
+                {
+                    bidder: 'rubicon',
+                    params: {
+                       accountId: 24676,
+                       siteId: 564248,
+                       zoneId: 3567354
+                    }
+                }
+            ]
+        }];
+  
+        pbjs.que.push(function() {
+            pbjs.addAdUnits(adUnits);
+            pbjs.setConfig({ priceGranularity: "high" });
+            pbjs.setConfig({ consentManagement: { gdpr: { cmpApi: "iab", defaultGdprScope: true }}});
+            pbjs.setConfig({ "currency": { "adServerCurrency": "EUR", "conversionRateFile": "https://currency.prebid.org/latest.json" }});
+            pbjs.requestBids({
+                bidsBackHandler: initAdserver
+            });
+        });
+  
+        function initAdserver() {
+            if (pbjs.initAdserverSet) return;
+            pbjs.initAdserverSet = true;
+            googletag.cmd.push(function() {
+                pbjs.que.push(function() {
+                    pbjs.setTargetingForGPTAsync();
+                    googletag.pubads().refresh();
+                });
+            });
+        }
+  
+        setTimeout(function() {
+            initAdserver();
+        }, PREBID_TIMEOUT);
+  
+        googletag.cmd.push(function() {
+            var slot1 = googletag.defineSlot('/22999307524/tipsenideetjes.nl/video', [[1, 1]], 'video').addService(googletag.pubads());
+            googletag.pubads().disableInitialLoad();
+            googletag.pubads().enableSingleRequest();
+            googletag.pubads().collapseEmptyDivs();
+            googletag.pubads().setCentering(true);
+            googletag.enableServices();
+        });
+
+    </script>
+  </head>
+
+  <body>
+    <h2>Dit is een test</h2>
+    <div id='video'>
+        <script type='text/javascript'>
+            googletag.cmd.push(function() {
+                googletag.display('video');
+            });
+        </script>
+        
+  </div>
+  </body>
+</html>
