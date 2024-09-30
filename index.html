@@ -7,6 +7,56 @@
     <script async src="./prebid.js"></script>
     <script>
 
+function render(bid) {
+    const videoContent = document.getElementById("videocontent");
+    const adContainer = document.getElementById("video");
+    const adDisplayContainer = new google.ima.AdDisplayContainer(
+        adContainer,
+        videoContent
+    );
+
+    const adsRequest = new google.ima.AdsRequest();
+    adsRequest.adTagUrl = "";
+    adsRequest.adsResponse = bid.vastXml;
+
+    adsLoader = new google.ima.AdsLoader(adDisplayContainer);
+    adsLoader.requestAds(adsRequest);
+
+    adsLoader.addEventListener(
+        google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
+        (adsManagerLoadedEvent) => {
+            const adsRenderingSettings = new google.ima.AdsRenderingSettings();
+            adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = true;
+            /* videoContent should be set to the video DOM element. */
+            const adsManager = adsManagerLoadedEvent.getAdsManager(
+                videoContent,
+                adsRenderingSettings
+            );
+
+            /* Ad event listeners */
+            adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, () =>
+                videoContent.play()
+            );
+            adsManager.addEventListener(
+                google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED,
+                () => videoContent.pause()
+            );
+            adsManager.addEventListener(
+                google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
+                () => videoContent.play()
+            );
+
+            /* Play the ad */
+            videoContent.load();
+            adDisplayContainer.initialize();
+            adsManager.init(640, 480, google.ima.ViewMode.NORMAL);
+            adsManager.start();
+        },
+        false
+    );
+}
+
+
         var pbjs = pbjs || {};
         pbjs.que = pbjs.que || [];
   
@@ -80,14 +130,14 @@
 
   <body>
     <h2>Dit is een test</h2>
-    <div id='video'>
-        <script type='text/javascript'>
-            googletag.cmd.push(function() {
-                googletag.display('video');
-            });
-            console.log('Jaap');
-        </script>
-        
-  </div>
+    <div id="videocontent">
+        <div id="video">
+           <script type="text/javascript">
+              googletag.cmd.push(function() {
+                  googletag.display('video');
+              });
+           </script>
+        </div>
+    </div>
   </body>
 </html>
